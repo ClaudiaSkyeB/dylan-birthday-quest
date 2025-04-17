@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dylan's Birthday Quest</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #0e0b16;
+      color: #fff;
+      font-family: 'Courier New', Courier, monospace;
+      overflow-x: hidden;
+    }
+
+    .title {
+        margin-bottom: 0;
+  color: #ffd6d6;
+  max-width: 90vw;
+  width: 100%;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  word-wrap: break-word;
+}
+
+#sub-title {
+    margin-top: 0;
+}
+    .game-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 2rem;
+      text-align: center;
+      display: none;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      position: relative;
+      z-index: 1;
+    }
+
+    .background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-image: url('assets/bg-chapter0.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+        z-index: 0;
+        opacity: 0.6;
+}
+
+    .sprite {
+  width: 50px;
+  display: inline-block;
+  margin: 1rem;
+  transition: opacity 1s;
+}
+
+.dialogue-box {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid #f8b195;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  line-height: 1.4;
+  width: 80vw;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+    button {
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 5px;
+      margin-top: 1.5rem;
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #poster-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      flex-direction: column;
+    }
+
+    #poster-container {
+      position: relative;
+      width: 100%;
+      max-width: 450px;
+      height: auto;
+    }
+
+    #poster-img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    #poster-button {
+      position: absolute;
+      bottom: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: none;
+      border: none;
+      padding: 0;
+      animation: float 2s ease-in-out infinite;
+      z-index: 101;
+    }
+
+    #poster-button img {
+      width: 130px;
+    }
+
+    @keyframes float {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -5px); }
+}
+  #sparkles {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    pointer-events: none;
+    z-index: 2;
+  }
+  
+  .sparkle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0;
+    animation: sparkleFade 1s ease-out forwards;
+  }
+
+  @keyframes sparkleFade {
+    0% { opacity: 0; transform: scale(0.5) translateY(0); }
+    50% { opacity: 1; transform: scale(1.2) translateY(-10px); }
+    100% { opacity: 0; transform: scale(0.5) translateY(-20px); }
+  }
+  #chapter-poster {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    flex-direction: column;
+  }
+
+  #chapter-container {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+  }
+
+  .chapter-button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0.5rem;
+  cursor: pointer;
+}
+
+.chapter-button img {
+  width: 130px;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.chapter-button:hover img {
+  transform: scale(1.05);
+}
+
+.chapter-button:active img {
+  transform: scale(0.95);
+}
+
+  
+
+</style>
+</head>
+<body>
+  <div id="poster-screen">
+    <div id="poster-container">
+      <img id="poster-img" src="assets/Poster_Image.png" alt="Poster" />
+      <button id="poster-button" onclick="startGame()">
+        <img src="assets/button.png" alt="Tap to Begin" />
+      </button>
+    </div>
+  </div>
+
+  <div class="background"></div>
+  <div class="game-container" id="game">
+        <h3 class="title" id="chapter-title"></h3>
+        <h4 class="title" id="sub-title"></h4> 
+          
+    <div>
+      <img src="assets/Sir_Dylan.png" alt="Sir Dylan" class="sprite" style="display: none; opacity: 0; width: 100px;" />
+      <img src="assets/Pumpkin_Pye.png" alt="Pumpkin Pye" class="sprite" style="display: none; opacity: 0; width: 100px;" />
+    </div>
+    <div id="sparkles" class="hidden"></div>
+    <div onclick="nextDialogue()" class="dialogue-box" id="dialogue-box">
+      <p id="dialogue-text">A birthday adventure guided by the mildly chaotic yet tender-hearted Pumpkin Pye of the Southern Stars, a winged whisper of starlight, whose voice rings like laughter in a teacup and whose cheer is dangerously contagious.</p>
+    </div>
+  </div>
+
+  <audio id="sparkle-sound" src="assets/sparkle.mp3"></audio>
+  <audio id="intro-audio" src="assets/intro.mp3" loop></audio>
+
+  <script>
+    // Game structure by chapter
+const gameChapters = [
+  {
+    id: 0,
+    title: "Prologue",
+    subHeading: "",
+    dialogues: [
+      "The sun rises over the Realm of Cape Amoria. A golden light spills across hilltops, cobblestones, and cozy corners of the world. And somewhere in this realm…",
+      "…a hero awakens.",
+      "Sir Dylan Bouwer—tattooed champion of charm, tequila taster of legend, and seeker of good vibes—has reached the 28th turn of his sun cycle.",
+      "But this is no ordinary day.",
+      "A shimmer twirls in the air like cinnamon caught in moonlight. A tiny winged figure appears in a flash of peach and pink light, arms crossed, glitter dripping from her fingertips.",
+      "“Well, well, well,” she says, placing her hands on her sparkly little hips. “You’ve finally woken up.”",
+      "I am Pumpkin Pye of the Southern Stars—guide of heroes, whisperer of wisdom, and your emotional support sparkle sprite.",
+      "She spins midair, a tiny dramatic gasp escaping her.",
+      "Today is no ordinary day. Nay! It is your Twenty-Eight Name Day, and a quest of great flavor and feelings awaits.",
+      "Now let’s get this party started, chosen one."
+    ],
+    buffs: [],
+    achievement: "🎉 Quest started!"
+  },
+  {
+    id: 1,
+    title: "The Mother’s Blessing",
+    subHeading: "Breakfast with the family",
+    dialogues: [
+        "The morning begins at Our Local—a café that smells like toast, sunlit wood, and years of familiarity.",
+        "You arrive to find your family already gathered, laughter rising like steam from their mugs.",
+        "The coffee is strong, the food arrives warm, and the chatter drifts in and out like waves.",
+        "It’s unhurried. Easy. There’s teasing, there’s care, there’s that quiet magic only shared history can bring.",
+        "When you leave, there’s a sense of blessing—not loud, but glowing. Like a candle in a quiet room.",
+        "Outside, the sun is warmer somehow. The road ahead doesn’t feel as scary."
+    ],
+    buffs: ["+5 Energy", "+10 Nostalgia"],
+    achievement: "🏆 Touched by the Mother's Words"
+  },
+  {
+    id: 2,
+    title: "Hour of Mischief",
+    subHeading: "Select your trial",
+    dialogues: ["You arrive at the Trial Grounds of Mischief—three paths before you.",
+      "Pumpkin Pye grins wickedly. 'Ah, the Hour of Mischief. Choose your flavor of chaos, sweet boy.'",
+      "One path trembles with adrenaline, another glimmers with sentiment, and the last echoes with watery wisdom. Choose what calls to you."
+    ],
+    choices: [
+      {
+        id: "crystal",
+        name: "Crystal Caves",
+        dialogues: [
+          "A cozy cavern welcomes you, glittering with beads and glowing rocks.",
+          "A table awaits. On it—beads the color of eyes, stars, dreams.",
+          "Pumpkin Pye swoons. 'Crafting is a spell, and love is the thread.'",
+          "You begin to string. One for you. One for her. A bond you can wear.",
+          "When you finish, the bracelet hums softly in your hand.",
+          "Pumpkin Pye wipes a tear. 'Emotional damage… healed.'"
+        ],
+        buffs: ["+5 Sentiment", "+1 Beaded Bond"],
+        achievement: "🏆 Bearer of the Beaded Bond"
+      },
+      {
+        id: "deep",
+        name: "The Deep Watch",
+        dialogues: [
+          "The air shifts. Glass domes. Swirling water. Blue light.",
+          "You're inside the Deep Watch—an ancient aquarium of wonder and wet weirdos.",
+          "Pumpkin Pye rides a jellyfish. 'I’m not coming out. This is my home now.'",
+          "You wander the glass halls, touched by silence and shimmering life.",
+          "A stingray glides past, and for a second, you swear it winks.",
+          "You leave feeling a little deeper, a little saltier, a little more alive."
+        ],
+        buffs: ["+8 Serenity", "+1 Ocean Wisdom"],
+        achievement: "🏆 Soul Touched by the Sea"
+      },
+      {
+        id: "skip",
+        name: "Skip",
+        dialogues: [
+            "You approach the Trial Grounds of Mischief... only to find the portals already closing.",
+            "Pumpkin Pye gasps dramatically. 'Oopsies! Time's a cruel trickster, and it seems we’ve been out-tricked.'",
+            "She shrugs midair. 'No beads, no axes, no slippery fish. But hey—at least your dignity’s intact.'",
+            "She pats your head. 'Next time, sweet boy. Mischief will wait for you.'"
+        ],
+        buffs: ["+1 Rested Feet", "+1 Sensible Time Management"],
+        achievement: "🏆 Master of Time Boundaries"
+      }
+    ],
+    buffs: ["+20 Laughter", "+1 Mischief Badge"],
+    achievement: "🏆 Master of Mayhem"
+  },
+  {
+    id: 3,
+    title: "Waters of Restoration",
+    subHeading: "Spa and jacuzzi",
+    dialogues: ["The Temple of Touch and Steam welcomes you with open arms and open pores.",
+      "Pumpkin Pye flutters beside your shoulder, batting her lashes like a sparkly flirt. 'Finally, a quest where you get touched and steamed... and I don’t mean emotionally,' she winks.",
+      "You step inside, already smiling. Soft towels, calming music, and air that smells like lavender dreams greet you.",
+      "The attendant leads you into a chamber of heat and serenity. You don’t hesitate. You’re exactly where you want to be.",
+      "'Let go,' Pumpkin Pye coos, plopping herself into a bowl of rosewater. 'This is a sacred rite of the body and soul.'",
+      "As the massage begins, your muscles melt like butter in the sun. You can feel yourself coming back to yourself.",
+      "Silence wraps around you—not awkward, but warm. Restorative.",
+      "Then… the jacuzzi. Oh yes. The sacred bubble forge of champions.",
+      "You slide in. The warmth cradles you. Time stretches. Pye giggles somewhere, nearly drowning in fizzy joy.",
+      "You leave aglow, like you’ve been spell-bathed. Restored. Recharged. Radiant."
+    ],
+    buffs: ["+50 Mood", "+15 Flexibility"],
+    achievement: "🏆 Touched by the Jacuzzi of Destiny"
+  },
+  {
+    id: 4,
+    title: "The Sacred Toast",
+    subHeading: "Fine dining and tequila",
+    dialogues: [
+  "The Temple of Hacienda rises before you—soft lights, velvet seats, and the scent of something divine sizzling in the air.",
+  "You step inside and take your place at the table. The menu reads like poetry. The ambiance hums like a spell.",
+  "And across from you… someone wonderful is smiling. You smile back.",
+  "Course after course arrives. Each bite: ridiculous. Perfect. Tequila sparkles like liquid mischief.",
+  "Pumpkin Pye clinks her tiny glass. 'To flavor. To feelings. To the birthday bard!'",
+  "You laugh more than you expected. Time melts between candlelight and conversation.",
+  "You feel full—but not just with food. With warmth. With intention. With joy.",
+  "This is what you chose. And this is what chose you.",
+  "Tonight, you are celebrated. And seen."
+],
+    buffs: ["+100 Hunger Satisfaction", "+2 Fancy Points"],
+    achievement: "🏆 Slayer of the Hungerbeast"
+  },
+  {
+    id: 5,
+    title: "The Gathering of Champions",
+    subHeading: "Meet allies at the Hall of Revelry",
+    dialogues: [
+  "The Hall of Revelry pulses with music, golden light, and the scent of something fried and mysterious.",
+  "You push open the door and step into a sea of laughter, hugs, and high-fives. Your allies have gathered, their smiles as warm as the lights above.",
+  "The energy is electric, the kind that wraps around your chest and says: you're exactly where you’re meant to be.",
+  "The music swells. The lights blur. And for a moment, everything feels like forever.",
+  "You did it. The quest is complete. And you never had to walk it alone.",
+  "The journey isn’t over—but tonight, it is honored. Celebrated. Remembered."
+],
+    buffs: ["+99 XP", "+3 Social Bonds"],
+    achievement: "🏆 Champion of the Sacred Toast"
+  },
+  {
+  id: 6,
+  title: "The Feymoon’s Gift",
+  subHeading: "",
+  dialogues: [
+    "The moon rises gently over the land of Amoria, casting silver light on the path behind you.",
+    "You, Sir Dylan, have completed your Name Day Quest with strength, laughter, and legendary charm.",
+    "Pumpkin Pye hovers before you, glowing faintly under the silver sky.",
+    "“Wait,” she says, holding out a rolled scroll.",
+    "“This is for you. A final enchantment. A truth wrapped in shimmer and softness.”",
+    "She presses the scroll into your hands and smiles, her eyes bright and glassy."
+  ],
+  buffs: ["+10 Wisdom", "+1 Enchanted Scroll"],
+  achievement: "🏆 Receiver of the Feymoon’s Blessing"
+},
+{
+  id: 7,
+  title: "The Scroll Unfolds",
+  subHeading: "",
+  dialogues: [
+  "My sweet boy…",
+  "You did it. You’ve come so far—farther than you give yourself credit for. I know you don’t have all the answers right now, and that’s okay. You’re not lost. You’re just becoming.",
+  "You’ve made bold, beautiful choices. You’ve chosen healing. You’ve chosen connection. You’ve chosen life. And that’s braver than any blade or spell.",
+  "You are not behind. You are exactly where you are meant to be. There is time. There is magic. And there is so much love waiting for you in every direction.",
+  "She twirls midair, a soft sparkle trailing behind her.",
+  "I am so proud of you. And I believe in you completely. You can build anything. Become anything. Dream anything. And you’ll never walk that road alone.",
+  "Pumpkin Pye lands gently on your shoulder.",
+  "Happy birthday, Dylan. You are loved. Fiercely. Softly. Deeply. Always."
+],
+  buffs: [],
+  achievement: "🏆 The Future Is Yours"
+}
+];
+
+    let currentChapter = 0;
+    let selectedTrial = null;
+    let currentLine = 0;
+    const dialogueText = document.getElementById("dialogue-text");
+    const sparkle = document.getElementById("sparkle-sound");
+
+    function startGame() {
+  sparkle.play();
+  const introAudio = document.getElementById("intro-audio");
+  introAudio.volume = 1;
+  introAudio.play();
+  const poster = document.getElementById("poster-screen");
+  const game = document.getElementById("game");
+
+  poster.style.transition = "opacity 1s ease-in-out";
+  poster.style.opacity = 0;
+
+  setTimeout(() => {
+    poster.style.display = "none";
+    game.style.display = "block";
+    setTimeout(() => {
+      game.style.opacity = 1;
+    }, 50);
+  }, 1000);
+    }
+
+    function showChapterPoster() {
+  const bg = document.querySelector('.background');
+  bg.style.transition = 'background-image 1s ease-in-out';
+  bg.style.backgroundImage = `url('assets/bg-chapter${currentChapter}.png')`;
+}
+
+
+
+function selectTrial(trialId) {
+   const choice = gameChapters[2].choices.find(c => c.id === trialId);
+  const bg = document.querySelector('.background');
+  selectedTrial = trialId;
+  currentLine = 0;
+  document.getElementById("sub-title").textContent = choice.name;
+  bg.style.transition = 'background-image 1s ease-in-out';
+  bg.style.backgroundImage = `url('assets/bg-trial-${trialId}.png')`;
+  dialogueText.textContent = choice.dialogues[currentLine];
+  currentLine++;
+}
+
+
+function nextDialogue() {
+  sparkle.play();
+
+  const dylan = document.querySelector('img[alt="Sir Dylan"]');
+  const pye = document.querySelector('img[alt="Pumpkin Pye"]');
+  const box = document.getElementById("dialogue-box");
+  const chapter = gameChapters[currentChapter];
+document.getElementById("chapter-title").textContent = `Chapter ${currentChapter}: ${chapter.title}`;
+if (!selectedTrial) {
+    document.getElementById("sub-title").textContent = chapter.subHeading;
+}
+
+  if (!selectedTrial && currentLine === 0) {
+    showChapterPoster();
+  }
+
+  // If Chapter 2 and reached end of intro, show trial options
+  if (currentChapter === 2 && currentLine === chapter.dialogues.length && !selectedTrial) {
+    const choiceButtons = chapter.choices.map(choice => {
+      return `
+      <button class="chapter-button" onclick="selectTrial('${choice.id}')">
+        <img src="assets/${choice.id}-btn.png" alt="${choice.name}" />
+        </button>
+      `;
+    }).join('');
+    dialogueText.innerHTML = `<p><strong>Choose your Trial of Mischief:</strong></p>${choiceButtons}`;
+    return;
+  }
+
+  // If a trial is selected in Chapter 2
+  if (currentChapter === 2 && selectedTrial) {
+    const trial = chapter.choices.find(c => c.id === selectedTrial);
+    if (currentLine < trial.dialogues.length) {
+      dialogueText.textContent = trial.dialogues[currentLine];
+      currentLine++;
+    } else {
+        dialogueText.innerHTML = `
+        <strong>Achievement Unlocked:</strong><br/>
+  <strong>${trial.achievement}</strong><br/>
+  ${chapter.buffs.map(buff => `${buff}`).join(' ')}
+`;
+      currentChapter++;
+      selectedTrial = null;
+      currentLine = 0;
+    }
+    return;
+  }
+
+  // Show standard chapter dialogue
+  if (currentLine < chapter.dialogues.length) {
+    dialogueText.textContent = chapter.dialogues[currentLine];
+
+    // Dylan appears (chapter 0, line 2)
+    if (currentChapter === 0 && currentLine === 2) {
+      dylan.style.opacity = 0;
+      dylan.style.display = 'inline-block';
+      setTimeout(() => dylan.style.opacity = 1, 100);
+    }
+
+    // Hide the sprites once Chapter 0 ends
+if (currentChapter === 1 && currentLine === 0) {
+  dylan.style.display = 'none';
+  pye.style.display = 'none';
+}
+
+    // Pumpkin Pye appears with sparkles (chapter 0, line 5)
+    if (currentChapter === 0 && currentLine === 5) {
+      const sparkleContainer = document.getElementById("sparkles");
+      sparkleContainer.innerHTML = "";
+      sparkleContainer.classList.remove("hidden");
+
+      for (let i = 0; i < 15; i++) {
+        const sparkle = document.createElement("div");
+        sparkle.className = "sparkle";
+        sparkle.style.left = `${Math.random() * 100}px`;
+        sparkle.style.top = `${Math.random() * 100}px`;
+        sparkleContainer.appendChild(sparkle);
+      }
+
+      setTimeout(() => {
+        pye.style.opacity = 0;
+        pye.style.display = 'inline-block';
+        pye.style.transition = 'opacity 1s';
+        pye.style.zIndex = 3;
+        pye.style.position = 'relative';
+        setTimeout(() => {
+          pye.style.opacity = 1;
+          sparkleContainer.classList.add("hidden");
+        }, 100);
+      }, 300);
+    }
+
+    currentLine++;
+  } else {
+    dialogueText.innerHTML = `
+    <strong>Achievement Unlocked:</strong><br/>
+  <strong>${chapter.achievement}</strong><br/>
+  ${chapter.buffs.map(buff => `${buff}`).join(' ')}
+`;
+
+    currentChapter++;
+    currentLine = 0;
+
+    if (currentChapter >= gameChapters.length) {
+      box.innerHTML += '<p>🎉 You have completed the quest!</p>';
+    }
+  }
+}
+  </script>
+</body>
+</html>
